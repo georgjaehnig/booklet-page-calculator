@@ -20,27 +20,32 @@ function calculate()
   document.getElementById('print1').value = print1;
   document.getElementById('print2').value = print2;
 }
-    
+
+function init()
+{
+  selectCount = document.getElementById('count');
+  for (var i=4; i<=1000; i=i+4) {
+    selectCount.options[selectCount.length] = new Option(i);
+  }
+  calculate();
+}
   </script>
 </head>
-<body>
+<body onload='init();'>
   You can print booklets with your regular printer without installing any extra plugins.
   <form>
     <ol>
       <li>Make sure, your document's page count is dividable by 4, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
       <li>
-        Enter the page count of your document:
-        <input type="text" size="4" id="count" value="8"/>
-      </li>
-      <li>
-        Click on <input type="button" value="Calculate" onclick="calculate()">
+        Select the page count of your document:
+        <select id="count" onchange="calculate();"> </select>
       </li>
       <li> In your printer dialog, set "print 2 pages on 1".  </li>
-      <li> Print these pages first: <input type="text" id="print1"/></li>
+      <li> Print these pages first: <input type="text" id="print1" size="50" /></li>
       <li>
     Flip the printed pages and put them back into your printer.
       </li>
-      <li>Now print these pages: <input type="text" id="print2"/></li>
+      <li>Now print these pages: <input type="text" id="print2" size="50" /></li>
     </ol>
   </form>
 </body>
