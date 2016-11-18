@@ -1,51 +1,96 @@
 <html>
 <head>
-<title>Print Booklets</title>
+<title>Booklet Printing</title>
   <script type="text/javascript">
 
 function calculate()
 {
+  duplex = document.getElementById('duplex').value;
+  if (duplex == "Yes") {
+    document.getElementById("doublesided").style.display = "block";
+    document.getElementById("singlesided").style.display = "none";
+  }
+  else {
+    document.getElementById("doublesided").style.display = "none";
+    document.getElementById("singlesided").style.display = "block";
+  }
+  
   count = document.getElementById('count').value;
-  var print1 = '';
-  var print2 = '';
-  for (var i=1; i<count/2; i=i+2) {
-   print1 = print1 + (count-i+1).toString() + ',' + i.toString() + ',';
+  var duplexlist = '';
+  var side1list = '';
+  var side2list = '';
+  
+  for (var i = 1; i < count / 2; i = i + 2) {
+    side1list = side1list + (count - i+1).toString() + ',' + i.toString() + ',';
+    side2list = side2list + (i + 1).toString() + ',' + (count - i).toString() + ',';
+    duplexlist = duplexlist + side1list + side2list;
   }
-  for (var i=1; i<count/2; i=i+2) {
-   print2 = print2 + (i+1).toString() + ',' + (count-i).toString() + ',';
-  }
+  
   // delete last comma
-  print1 = print1.substr(0, print1.length-1);
-  print2 = print2.substr(0, print2.length-1);
-  document.getElementById('print1').value = print1;
-  document.getElementById('print2').value = print2;
+  side1list = side1list.substr(0, side1list.length - 1);
+  side2list = side2list.substr(0, side2list.length - 1);
+  duplexlist = duplexlist.substr(0, duplexlist.length - 1);
+  
+  document.getElementById('side1list').value = side1list;
+  document.getElementById('side2list').value = side2list;
+  document.getElementById('duplexlist').value = duplexlist;
 }
 
 function init()
 {
   selectCount = document.getElementById('count');
-  for (var i=4; i<=1000; i=i+4) {
+  for (var i = 4; i <= 1000; i = i + 4) {
     selectCount.options[selectCount.length] = new Option(i);
   }
+  
   calculate();
 }
+
   </script>
+  <style>
+    li {
+      line-height: 2em;
+    }
+  </style>
+
 </head>
 <body onload='init();'>
-  You can print booklets with your regular printer without installing any extra plugins.
+
+  <h2>Booklet Printing</h2>
+  
+  <p>You can print booklets with your regular printer without installing any
+  extra plugins, and even if your software does not have booklet support.</p>
+
+  <h3>Preparation</h3>
+  
   <form>
     <ol>
-      <li>Make sure, your document's page count is dividable by 4, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
+      <li>Make sure, your document's page count is divisible by 4, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
       <li>
         Select the page count of your document:
         <select id="count" onchange="calculate();"> </select>
       </li>
-      <li> In your printer dialog, set "print 2 pages on 1".  </li>
-      <li> Print these pages first: <input type="text" id="print1" size="50" /></li>
       <li>
-    Flip the printed pages and put them back into your printer.
+        Does your printer print double-sided?
+        <select id="duplex" onchange="calculate();">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option> 
+        </select>
       </li>
-      <li>Now print these pages: <input type="text" id="print2" size="50" /></li>
+    </ol>
+
+  <h3>Printing</h3>
+
+    <ol id="doublesided">
+      <li>Set your printer's "pages per side" setting to 2.</li>
+      <li>Set your printer's "2-sided" (duplex) setting to "Short Edge", "Short Edge Binding", "Flip" or similar.
+      <li>Print pages in this order: <input type="text" id="duplexlist" size="50" /></li>
+    </ol>
+    <ol id="singlesided">
+      <li>Set your printer's "pages per side" setting to 2.</li>
+      <li>Print these pages first: <input type="text" id="side1list" size="50" /></li>
+      <li>Flip the printed pages and put them back into your printer.</li>
+      <li>Now print these pages: <input type="text" id="side2list" size="50" /></li>
     </ol>
   </form>
 </body>
