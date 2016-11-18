@@ -6,7 +6,7 @@
 function calculate()
 {
   duplex = document.getElementById('duplex').value;
-  if (duplex == "Yes") {
+  if (duplex == "1") {
     document.getElementById("doublesided").style.display = "block";
     document.getElementById("singlesided").style.display = "none";
   }
@@ -73,8 +73,8 @@ function init()
       <li>
         Does your printer print double-sided?
         <select id="duplex" onchange="calculate();">
-          <option value="No">No</option> 
-          <option value="Yes">Yes</option>
+          <option value="0">No</option> 
+          <option value="1">Yes</option>
         </select>
       </li>
     </ol>
