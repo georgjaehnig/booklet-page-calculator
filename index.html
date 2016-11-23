@@ -21,9 +21,11 @@ function calculate()
   var side2list = '';
   
   for (var i = 1; i < count / 2; i = i + 2) {
-    side1list = side1list + (count - i+1).toString() + ',' + i.toString() + ',';
-    side2list = side2list + (i + 1).toString() + ',' + (count - i).toString() + ',';
-    duplexlist = duplexlist + side1list + side2list;
+    var new1 = (count - i+1).toString() + ',' + i.toString() + ',';
+    var new2 = (i + 1).toString() + ',' + (count - i).toString() + ',';
+    side1list = side1list + new1;
+    side2list = side2list + new2;
+    duplexlist = duplexlist + new1 + new2;
   }
   
   // delete last comma
@@ -46,6 +48,8 @@ function init()
   calculate();
 }
 
+document.addEventListener("DOMContentLoaded", init);
+
   </script>
   <style>
     li {
@@ -54,7 +58,7 @@ function init()
   </style>
 
 </head>
-<body onload='init();'>
+<body>
 
   <h2>Booklet Printing</h2>
   
