@@ -2,10 +2,10 @@
 <head>
 <title>Booklet Printing</title>
   <script type="text/javascript">
-
 function calculate()
 {
   duplex = document.getElementById('duplex').value;
+  itempp = parseInt(document.getElementById('itempp').value);
   if (duplex == "1") {
     document.getElementById("doublesided").style.display = "block";
     document.getElementById("singlesided").style.display = "none";
@@ -20,14 +20,20 @@ function calculate()
   var side1list = '';
   var side2list = '';
   
-  for (var i = 1; i < count / 2; i = i + 2) {
-    var new1 = (count - i+1).toString() + ',' + i.toString() + ',';
-    var new2 = (i + 1).toString() + ',' + (count - i).toString() + ',';
-    side1list = side1list + new1;
-    side2list = side2list + new2;
-    duplexlist = duplexlist + new1 + new2;
+
+  for (var i = 1; i < count / 2 ; i += itempp) {
+  	for (j = 1; j < itempp ; j += 2) {
+    	new1 = (count-i+1-j+1).toString() + ',' + (i+j-1).toString() + ',';
+    	side1list += new1;
+    	duplexlist += new1;	
+    }
+    for (j = 1; j < itempp ; j += 2) {
+    	new2 = (i+j).toString() + ',' + (count-i-j+1).toString() + ',';
+    	side2list += new2;
+    	duplexlist += new2;	
+    }
   }
-  
+
   // delete last comma
   side1list = side1list.substr(0, side1list.length - 1);
   side2list = side2list.substr(0, side2list.length - 1);
@@ -37,19 +43,16 @@ function calculate()
   document.getElementById('side2list').value = side2list;
   document.getElementById('duplexlist').value = duplexlist;
 }
-
 function init()
 {
   selectCount = document.getElementById('count');
-  for (var i = 4; i <= 1000; i = i + 4) {
+  for (var i = 8; i <= 1000; i = i + 4) {
     selectCount.options[selectCount.length] = new Option(i);
   }
   
   calculate();
 }
-
 document.addEventListener("DOMContentLoaded", init);
-
   </script>
   <style>
     li {
@@ -79,6 +82,15 @@ document.addEventListener("DOMContentLoaded", init);
         <select id="duplex" onchange="calculate();">
           <option value="0">No</option> 
           <option value="1">Yes</option>
+        </select>
+      </li>
+      <li>
+        Define items per page :
+        <select id="itempp" onchange="calculate();"> 
+        	<option value="2">2</option> 
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
         </select>
       </li>
     </ol>
