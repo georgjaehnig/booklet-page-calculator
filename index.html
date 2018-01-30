@@ -6,7 +6,9 @@
 function calculate()
 {
   duplex = document.getElementById('duplex').value;
-  if (duplex == "1") {
+  direction = document.getElementById('direction').value;
+
+  if (duplex == "Yes") {
     document.getElementById("doublesided").style.display = "block";
     document.getElementById("singlesided").style.display = "none";
   }
@@ -14,25 +16,36 @@ function calculate()
     document.getElementById("doublesided").style.display = "none";
     document.getElementById("singlesided").style.display = "block";
   }
-  
+
   count = document.getElementById('count').value;
   var duplexlist = '';
   var side1list = '';
   var side2list = '';
-  
+
   for (var i = 1; i < count / 2; i = i + 2) {
-    var new1 = (count - i+1).toString() + ',' + i.toString() + ',';
-    var new2 = (i + 1).toString() + ',' + (count - i).toString() + ',';
+    var new1;
+    var new2;
+    if (direction == "LTR") {
+      var new1 = (count - i+1).toString() + ',' + i.toString() + ',';
+      var new2 = (i + 1).toString() + ',' + (count - i).toString() + ',';
+    }
+    else {
+      // RTL; this is the above two lines with each pair of numbers in the
+      // other order
+      var new1 = i.toString() + ',' + (count - i+1).toString() + ',';
+      var new2 = (count - i).toString() + ',' + (i + 1).toString() + ',';
+    }
+
     side1list = side1list + new1;
     side2list = side2list + new2;
     duplexlist = duplexlist + new1 + new2;
   }
-  
+
   // delete last comma
   side1list = side1list.substr(0, side1list.length - 1);
   side2list = side2list.substr(0, side2list.length - 1);
   duplexlist = duplexlist.substr(0, duplexlist.length - 1);
-  
+
   document.getElementById('side1list').value = side1list;
   document.getElementById('side2list').value = side2list;
   document.getElementById('duplexlist').value = duplexlist;
@@ -44,7 +57,7 @@ function init()
   for (var i = 4; i <= 1000; i = i + 4) {
     selectCount.options[selectCount.length] = new Option(i);
   }
-  
+
   calculate();
 }
 
@@ -61,15 +74,15 @@ document.addEventListener("DOMContentLoaded", init);
 <body>
 
   <h2>Booklet Printing</h2>
-  
+
   <p>You can print booklets with your regular printer without installing any
   extra plugins, and even if your software does not have booklet support.</p>
 
   <h3>Preparation</h3>
-  
+
   <form>
     <ol>
-      <li>Make sure, your document's page count is divisible by 4, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
+      <li>Make sure your document's page count is divisible by 4, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
       <li>
         Select the page count of your document:
         <select id="count" onchange="calculate();"> </select>
@@ -77,8 +90,15 @@ document.addEventListener("DOMContentLoaded", init);
       <li>
         Does your printer print double-sided?
         <select id="duplex" onchange="calculate();">
-          <option value="0">No</option> 
-          <option value="1">Yes</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </li>
+      <li>
+        Is the language read left-to-right (usual) or right-to-left (Hebrew, Farsi etc.)?
+        <select id="direction" onchange="calculate();">
+          <option value="LTR">Left-to-right (usual)</option>
+          <option value="RTL">Right-to-left (unusual)</option>
         </select>
       </li>
     </ol>
