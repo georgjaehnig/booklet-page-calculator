@@ -1,7 +1,14 @@
 <html>
 <head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" integrity="sha512-yVvxUQV0QESBt1SyZbNJMAwyKvFTLMyXSyBHDO4BG5t7k/Lw34tyqlSDlKIrIENIzCl+RVUNjmCPG+V/GMesRw==" crossorigin="anonymous" />
 <title>Booklet Printing</title>
   <script type="text/javascript">
+
+
 
 function calculate()
 {
@@ -57,10 +64,18 @@ function init()
   for (var i = 4; i <= 1000; i = i + 4) {
     selectCount.options[selectCount.length] = new Option(i);
   }
-
+  $("#count").trigger("chosen:updated");
   calculate();
 }
+function copyToClipboard(id) {
+  var copyText = document.getElementById(id);
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+  document.execCommand("copy");
+  toastr.clear()
+  toastr.info("Copied to clipboard");
 
+} 
 document.addEventListener("DOMContentLoaded", init);
 
   </script>
@@ -68,57 +83,109 @@ document.addEventListener("DOMContentLoaded", init);
     li {
       line-height: 2em;
     }
+    .btn{
+      font-size:18px;
+    }
+    .row{
+      margin-left: 5%;
+      margin-right: 5%;
+      border-bottom: 2px solid #ececec;
+      padding-bottom: 10%;
+    }
+    form{
+      font-size: 17px;
+    }
+    #count_chosen{
+      width: 100px !important;
+    }
   </style>
 
 </head>
 <body>
 
-  <h2>Booklet Printing</h2>
+  <div class="jumbotron">
+    <div class="container">
+      <h2>Booklet Printing</h2>
 
-  <p>You can print booklets with your regular printer without installing any
-  extra plugins, and even if your software does not have booklet support.</p>
+      <p>You can print booklets with your regular printer without installing any
+          extra plugins, and even if your software does not have booklet support.</p>
+    </div>
+  </div>
+  <form class="inline-form">
+    <div class="containter">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Preparation</h3>
+          <ul class="list-group"> 
+            <li class="list-group-item">Make sure your document's page count is <b>divisible by 4</b>, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
+            <li class="list-group-item">
+              Select the page count of your document:
+              <select class="chosen-select"  id="count" onchange="calculate();"> </select>
+            </li>
+            <li class="list-group-item"> 
+              Does your printer print double-sided?
+              <select  id="duplex" onchange="calculate();">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </li>
+            <li class="list-group-item">
+              Is the language read left-to-right (usual) or right-to-left (Hebrew, Farsi etc.)?
+              <select id="direction" onchange="calculate();">
+                <option value="LTR">Left-to-right (usual)</option>
+                <option value="RTL">Right-to-left (unusual)</option>
+              </select>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h3>Printing</h3>
+          <ul class="list-group" id="doublesided">
+            <li class="list-group-item">Set your printer's "pages per side" setting to 2.</li>
+            <li class="list-group-item">Set your printer's "2-sided" (duplex) setting to "Short Edge", "Short Edge Binding", "Flip" or similar.
+            <li class="list-group-item">Print pages in this order: 
+              <div class="input-group">  
+                <input class="form-control" type="text" id="duplexlist" size="50" /> 
+                <span class="input-group-btn">
+                  <button onclick="copyToClipboard('duplexlist');" title="Copy to clipboard" class="btn btn-info" type="button"><i class="fa fa-clone"></i></button>
+                </span>
+              </div>
+            </li>
+          </ul>
+          <ul class="list-group" id="singlesided">
+            <li class="list-group-item">Set your printer's "pages per side" setting to 2.</li>
+            <li class="list-group-item">Print these pages first: 
+              <div class="input-group">  
+                <input class="form-control" type="text" id="side1list" size="50" /> 
+                <span class="input-group-btn">
+                  <button onclick="copyToClipboard('side1list');" title="Copy to clipboard" class="btn btn-info" type="button"><i class="fa fa-clone"></i></button>
+                </span>
+              </div>
+            </li>
+            <li class="list-group-item">Flip the printed pages and put them back into your printer.</li>
+            <li class="list-group-item">Now print these pages: 
+              <div class="input-group">  
+                <input class="form-control"  type="text" id="side2list" size="50" />
+                <span class="input-group-btn">
+                  <button onclick="copyToClipboard('side2list');" title="Copy to clipboard" class="btn btn-info" type="button"><i class="fa fa-clone"></i></button>
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </form>
 
-  <h3>Preparation</h3>
+  <a href="https://github.com/georgjaehnig/booklet-page-calculator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js" integrity="sha512-rMGGF4wg1R73ehtnxXBt5mbUfN9JUJwbk21KMlnLZDJh7BkPmeovBuddZCENJddHYYMkCh9hPFnPmS9sspki8g==" crossorigin="anonymous"></script>
+<script>
+  $(".chosen-select").chosen();
 
-  <form>
-    <ol>
-      <li>Make sure your document's page count is divisible by 4, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
-      <li>
-        Select the page count of your document:
-        <select id="count" onchange="calculate();"> </select>
-      </li>
-      <li>
-        Does your printer print double-sided?
-        <select id="duplex" onchange="calculate();">
-          <option value="No">No</option>
-          <option value="Yes">Yes</option>
-        </select>
-      </li>
-      <li>
-        Is the language read left-to-right (usual) or right-to-left (Hebrew, Farsi etc.)?
-        <select id="direction" onchange="calculate();">
-          <option value="LTR">Left-to-right (usual)</option>
-          <option value="RTL">Right-to-left (unusual)</option>
-        </select>
-      </li>
-    </ol>
-
-  <h3>Printing</h3>
-
-    <ol id="doublesided">
-      <li>Set your printer's "pages per side" setting to 2.</li>
-      <li>Set your printer's "2-sided" (duplex) setting to "Short Edge", "Short Edge Binding", "Flip" or similar.
-      <li>Print pages in this order: <input type="text" id="duplexlist" size="50" /></li>
-    </ol>
-    <ol id="singlesided">
-      <li>Set your printer's "pages per side" setting to 2.</li>
-      <li>Print these pages first: <input type="text" id="side1list" size="50" /></li>
-      <li>Flip the printed pages and put them back into your printer.</li>
-      <li>Now print these pages: <input type="text" id="side2list" size="50" /></li>
-    </ol>
-  </form>
-
-<a href="https://github.com/georgjaehnig/booklet-page-calculator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+</script>
 
 </body>
 </html>
