@@ -24,7 +24,7 @@ function calculate()
     document.getElementById("singlesided").style.display = "block";
   }
 
-  count = document.getElementById('count').value;
+  count = parseInt(document.getElementById('count').value);
   var duplexlist = '';
   var side1list = '';
   var side2list = '';
@@ -56,6 +56,11 @@ function calculate()
   document.getElementById('side1list').value = side1list;
   document.getElementById('side2list').value = side2list;
   document.getElementById('duplexlist').value = duplexlist;
+}
+
+function userUpdatesCount()
+{
+  calculate();
 }
 
 function init()
@@ -119,8 +124,8 @@ document.addEventListener("DOMContentLoaded", init);
           <ul class="list-group"> 
             <li class="list-group-item">Make sure your document's page count is <b>divisible by 4</b>, i.e. it contains 4 or 8 or 12 or ... pages. If not, add empty pages.</li>
             <li class="list-group-item">
-              Select the page count of your document:
-              <select class="chosen-select"  id="count" onchange="calculate();"> </select>
+              Select the number of pages to print:
+              <select class="chosen-select"  id="count" onchange="userUpdatesCount();"> </select>
             </li>
             <li class="list-group-item"> 
               Does your printer print double-sided?
