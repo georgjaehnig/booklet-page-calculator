@@ -25,6 +25,8 @@ function calculate()
   }
 
   count = parseInt(document.getElementById('count').value);
+  firstPage = parseInt(document.getElementById('firstPage').value);
+  offset = firstPage - 1;
   var duplexlist = '';
   var side1list = '';
   var side2list = '';
@@ -33,14 +35,14 @@ function calculate()
     var new1;
     var new2;
     if (direction == "LTR") {
-      var new1 = (count - i+1).toString() + ',' + i.toString() + ',';
-      var new2 = (i + 1).toString() + ',' + (count - i).toString() + ',';
+      var new1 = (offset + count - i+1).toString() + ',' + (offset + i).toString() + ',';
+      var new2 = (offset + i + 1).toString() + ',' + (offset + count - i).toString() + ',';
     }
     else {
       // RTL; this is the above two lines with each pair of numbers in the
       // other order
-      var new1 = i.toString() + ',' + (count - i+1).toString() + ',';
-      var new2 = (count - i).toString() + ',' + (i + 1).toString() + ',';
+      var new1 = (offset + i).toString() + ',' + (offset + count - i+1).toString() + ',';
+      var new2 = (offset + count - i).toString() + ',' + (offset + i + 1).toString() + ',';
     }
 
     side1list = side1list + new1;
@@ -63,13 +65,28 @@ function userUpdatesCount()
   calculate();
 }
 
+function userUpdatesFirstPage()
+{
+  calculate();
+}
+
 function init()
 {
+  // populate and set the page count dropdown
   selectCount = document.getElementById('count');
   for (var i = 4; i <= 1000; i = i + 4) {
     selectCount.options[selectCount.length] = new Option(i);
   }
   $("#count").trigger("chosen:updated");
+
+  // populate and set the first page dropdown
+  selectFirstPage = document.getElementById('firstPage');
+  for (var i = 1; i <= 1000; i++) {
+    selectFirstPage.options[selectFirstPage.length] = new Option(i);
+  }
+  selectFirstPage.value = 1;
+  $("#firstPage").trigger("chosen:updated");
+
   calculate();
 }
 function copyToClipboard(id) {
@@ -100,7 +117,7 @@ document.addEventListener("DOMContentLoaded", init);
     form{
       font-size: 17px;
     }
-    #count_chosen{
+    #count_chosen, #firstPage_chosen{
       width: 100px !important;
     }
   </style>
@@ -127,7 +144,11 @@ document.addEventListener("DOMContentLoaded", init);
               Select the number of pages to print:
               <select class="chosen-select"  id="count" onchange="userUpdatesCount();"> </select>
             </li>
-            <li class="list-group-item"> 
+            <li class="list-group-item">
+              Select the first page to print:
+              <select class="chosen-select"  id="firstPage" onchange="userUpdatesFirstPage();"> </select>
+            </li>
+            <li class="list-group-item">
               Does your printer print double-sided?
               <select  id="duplex" onchange="calculate();">
                 <option value="No">No</option>
