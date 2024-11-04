@@ -60,14 +60,50 @@ function calculate()
   document.getElementById('duplexlist').value = duplexlist;
 }
 
-function userUpdatesCount()
-{
+function userUpdatesCount() {
+  // If the user changes the page count, we need to update the last page dropdown
+  count = parseInt(document.getElementById('count').value);
+  firstPage = parseInt(document.getElementById('firstPage').value);
+  lastPage = firstPage - 1 + count;
+  document.getElementById('lastPage').value = lastPage;
+  $("#lastPage").trigger("chosen:updated");
+
   calculate();
 }
 
-function userUpdatesFirstPage()
-{
+function userUpdatesFirstPage() {
+  // If the user changes the first page, we need to adjust the selectable values
+  // of the last page dropdown and set the value according to the page count
+  count = parseInt(document.getElementById('count').value);
+  firstPage = parseInt(document.getElementById('firstPage').value);
+  updateLastPageOptions(firstPage);
+  lastPage = firstPage - 1 + count;
+  document.getElementById('lastPage').value = lastPage;
+  $("#lastPage").trigger("chosen:updated");
+
   calculate();
+}
+
+function userUpdatesLastPage() {
+  // If the user changes the last page, we need to adjust the page count dropdown
+  firstPage = parseInt(document.getElementById('firstPage').value);
+  lastPage = parseInt(document.getElementById('lastPage').value);
+  count = lastPage - firstPage + 1;
+  document.getElementById('count').value = count;
+  $("#count").trigger("chosen:updated");
+
+  calculate();
+}
+
+function updateLastPageOptions(firstPage) {
+  // Adjust the selectable values of the last page dropdown according to the
+  // first page
+  selectLastPage = document.getElementById('lastPage');
+  selectLastPage.options.length = 0;
+
+  for (var i = firstPage + 3; i <= 1000 + firstPage - 1; i = i + 4) {
+    selectLastPage.options[selectLastPage.length] = new Option(i);
+  }
 }
 
 function init()
@@ -86,6 +122,12 @@ function init()
   }
   selectFirstPage.value = 1;
   $("#firstPage").trigger("chosen:updated");
+
+  // populate and set the last page dropdown
+  updateLastPageOptions(1);
+  selectLastPage = document.getElementById('lastPage');
+  selectLastPage.value = 4;
+  $("#lastPage").trigger("chosen:updated");
 
   calculate();
 }
@@ -117,7 +159,7 @@ document.addEventListener("DOMContentLoaded", init);
     form{
       font-size: 17px;
     }
-    #count_chosen, #firstPage_chosen{
+    #count_chosen, #firstPage_chosen, #lastPage_chosen {
       width: 100px !important;
     }
   </style>
@@ -147,6 +189,10 @@ document.addEventListener("DOMContentLoaded", init);
             <li class="list-group-item">
               Select the first page to print:
               <select class="chosen-select"  id="firstPage" onchange="userUpdatesFirstPage();"> </select>
+            </li>
+            <li class="list-group-item">
+              Select the last page to print:
+              <select class="chosen-select"  id="lastPage" onchange="userUpdatesLastPage();"> </select>
             </li>
             <li class="list-group-item">
               Does your printer print double-sided?
